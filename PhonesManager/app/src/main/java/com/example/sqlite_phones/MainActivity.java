@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -17,27 +15,17 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sqlite_phones.Helpers.DBListener;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String DB_NAME = "kontakti.db";
-    protected EditText editName, editTel, editEmail;
-    protected Button btnInsert;
-    protected String dbPath;
+    public EditText editName, editTel, editEmail;
+    public Button btnInsert;
+    public String dbPath;
+    protected DBListener dbListener = new DBListener();
 
-    public void initDB() throws SQLException {
-        SQLiteDatabase db = null;
-        db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-        String q = "CREATE TABLE if not exists KONTAKTI(";
-        q += "ID integer primary key AUTOINCREMENT,";
-        q += "name text not null,";
-        q += "tel text not null,";
-        q += "email text not null,";
-        q += "unique(name,tel));";
-        db.execSQL(q);
-        db.close();
-    }
-
-    protected void switchToUpdateView(TableRow tr)
+    public void switchToUpdateView(TableRow tr)
     {
         tr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -63,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    protected void selectDB() throws SQLException {
-        SQLiteDatabase db = null;
-        db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-        String q = "SELECT * FROM KONTAKTI;";
-        Cursor c = db.rawQuery(q,null);
+    public void renderTable(){
+        dbListener.select(this,dbPath);
+    }
+
+    public void render(Cursor c){
         TableLayout table = findViewById(R.id.table);
         View theadView = table.getChildAt(0);
         table.removeAllViewsInLayout();
@@ -101,11 +89,9 @@ public class MainActivity extends AppCompatActivity {
             tr.addView(tvEmail);
             tr.addView(tvTel);
             tr.setBackgroundColor(Color.WHITE);
-            switchToUpdateView(tr);
+            this.switchToUpdateView(tr);
             table.addView(tr);
         }
-        db.rawQuery(q,null);
-        db.close();
     }
 
     @Override
@@ -113,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            selectDB();
+            renderTable();
         } catch (Exception e) {
         }
     }
@@ -127,15 +113,20 @@ public class MainActivity extends AppCompatActivity {
         editTel = findViewById(R.id.editTel);
         btnInsert = findViewById(R.id.btnInsert);
         dbPath = getFilesDir().getPath()+"/"+ DB_NAME;
+        final MainActivity mainActivity = this;
 
         try{
-            initDB();
-            selectDB();
+            dbListener.init(dbPath);
+            renderTable();
         }catch(Exception e){
             Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),
                     Toast.LENGTH_LONG).show();
         }
-        BtnListener btnListener = new BtnListener();
-        btnListener.insertListener(this);
+        btnInsert.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                dbListener.insert( mainActivity );
+            }
+        });
     }
 }
