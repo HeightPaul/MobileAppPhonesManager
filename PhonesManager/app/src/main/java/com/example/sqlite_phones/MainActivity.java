@@ -20,7 +20,7 @@ import com.example.sqlite_phones.Helpers.DBListener;
 public class MainActivity extends AppCompatActivity {
 
     public static final String DB_NAME = "kontakti.db";
-    public EditText editName, editTel, editEmail;
+    public EditText editName, editPhone, editEmail;
     public Button btnInsert;
     public String dbPath;
     protected DBListener dbListener = new DBListener();
@@ -33,18 +33,18 @@ public class MainActivity extends AppCompatActivity {
                 TextView idView = (TextView) tr.getChildAt(0);
                 TextView nameView = (TextView) tr.getChildAt(1);
                 TextView emailView = (TextView) tr.getChildAt(2);
-                TextView telView = (TextView) tr.getChildAt(3);
+                TextView phoneView = (TextView) tr.getChildAt(3);
                 String ID = idView.getText().toString();
                 String name = nameView.getText().toString();
                 String email = emailView.getText().toString();
-                String tel = telView.getText().toString();
+                String phone = phoneView.getText().toString();
 
                 Intent intent = new Intent(MainActivity.this, UpdateActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("ID", ID);
                 bundle.putString("name", name);
                 bundle.putString("email", email);
-                bundle.putString("tel", tel);
+                bundle.putString("phone", phone);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 200, bundle);
             }
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         {
             String name = c.getString(c.getColumnIndex("name"));
             String email = c.getString(c.getColumnIndex("email"));
-            String tel = c.getString(c.getColumnIndex("tel"));
+            String phone = c.getString(c.getColumnIndex("phone"));
             String ID = c.getString(c.getColumnIndex("ID"));
             TextView tvId = new TextView(this);
             tvId.setText(ID);
@@ -79,17 +79,17 @@ public class MainActivity extends AppCompatActivity {
             TextView tvEmail = new TextView(this);
             tvEmail.setText(email);
             tvEmail.setLayoutParams(params);
-            TextView tvTel = new TextView(this);
-            tvTel.setText(tel);
-            tvTel.setLayoutParams(params);
+            TextView tvPhone = new TextView(this);
+            tvPhone.setText(phone);
+            tvPhone.setLayoutParams(params);
             TableRow tr = new TableRow(this);
             tr.setId(Integer.parseInt(ID));
             tr.addView(tvId);
             tr.addView(tvName);
             tr.addView(tvEmail);
-            tr.addView(tvTel);
+            tr.addView(tvPhone);
             tr.setBackgroundColor(Color.WHITE);
-            this.switchToUpdateView(tr);
+            switchToUpdateView(tr);
             table.addView(tr);
         }
     }
@@ -110,11 +110,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         editName = findViewById(R.id.editName);
         editEmail = findViewById(R.id.editEmail);
-        editTel = findViewById(R.id.editTel);
+        editPhone = findViewById(R.id.editPhone);
         btnInsert = findViewById(R.id.btnInsert);
         dbPath = getFilesDir().getPath()+"/"+ DB_NAME;
-        final MainActivity mainActivity = this;
-
         try{
             dbListener.init(dbPath);
             renderTable();
@@ -125,7 +123,16 @@ public class MainActivity extends AppCompatActivity {
         btnInsert.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                dbListener.insert( mainActivity );
+                String name = editName.getText().toString();
+                String phone = editPhone.getText().toString();
+                String email = editEmail.getText().toString();
+                Object[] inputs = new Object[]{name,phone,email};
+                dbListener.insert( dbPath, inputs, getApplicationContext() );
+                try{
+                    renderTable();
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

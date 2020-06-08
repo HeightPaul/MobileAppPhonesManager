@@ -16,7 +16,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editTel"
+        android:id="@+id/editPhone"
         android:hint="Телефон"
         android:inputType="phone"></EditText>
 

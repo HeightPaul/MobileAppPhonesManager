@@ -13,12 +13,12 @@ public class DBListener {
     public void init(String dbPath) throws SQLException {
         SQLiteDatabase db = null;
         db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-        String q = "CREATE TABLE if not exists KONTAKTI(";
+        String q = "CREATE TABLE if not exists PHONE_CONTACTS(";
         q += "ID integer primary key AUTOINCREMENT,";
         q += "name text not null,";
-        q += "tel text not null,";
+        q += "phone text not null,";
         q += "email text not null,";
-        q += "unique(name,tel));";
+        q += "unique(name,phone));";
         db.execSQL(q);
         db.close();
     }
@@ -26,23 +26,19 @@ public class DBListener {
     public void select(MainActivity mainActivity,String dbPath){
         SQLiteDatabase db = null;
         db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-        String q = "SELECT * FROM KONTAKTI;";
+        String q = "SELECT * FROM PHONE_CONTACTS;";
         Cursor c = db.rawQuery(q,null);
         mainActivity.render(c);
         db.close();
     }
 
-    public void insert(final MainActivity mainActivity) throws SQLException {
-        Context mainContext = mainActivity.getApplicationContext();
+    public void insert(String dbPath, Object[] inputs, Context mainContext) throws SQLException {
         SQLiteDatabase db = null;
         try{
-            db = SQLiteDatabase.openOrCreateDatabase(mainActivity.dbPath,null);
-            String name = mainActivity.editName.getText().toString();
-            String tel = mainActivity.editTel.getText().toString();
-            String email = mainActivity.editEmail.getText().toString();
-            String q = "INSERT INTO KONTAKTI (name,tel,email) ";
+            db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
+            String q = "INSERT INTO PHONE_CONTACTS (name,phone,email) ";
             q+="VALUES(?,?,?)";
-            db.execSQL(q,new Object[]{name,tel,email});
+            db.execSQL(q,inputs);
             Toast.makeText(mainContext,"Insert successfully!",
                     Toast.LENGTH_LONG).show();
         }catch(SQLiteConstraintException e) {
@@ -52,17 +48,46 @@ public class DBListener {
         }catch(Exception e){
             Toast.makeText(mainContext,e.getLocalizedMessage(),
                     Toast.LENGTH_LONG).show();
-        }finally {
+        }finally{
             if(db!=null){
                 db.close();
             }
         }
+    }
 
-        try{
-            mainActivity.renderTable();
-        }catch (Exception e){
-            Toast.makeText(mainContext,e.getLocalizedMessage(),
-                    Toast.LENGTH_LONG).show();
+    public void update(String dbPath, Object[] inputs,Context mainContext){
+        SQLiteDatabase db = null;
+        try {
+            db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
+            String q = "UPDATE PHONE_CONTACTS SET name = ?, phone = ?, email = ? ";
+            q += "WHERE ID = ?;";
+            db.execSQL(q, inputs);
+            Toast.makeText(mainContext, "Update Successful", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(mainContext, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            if (db != null) {
+                db.close();
+                db = null;
+            }
+        }
+    }
+
+    public void delete(String dbPath, String id,Context mainContext){
+        SQLiteDatabase db = null;
+        try {
+            db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
+            String q = "DELETE FROM PHONE_CONTACTS WHERE ";
+            q += "ID = ?;";
+            db.execSQL(q, new Object[] { id });
+            Toast.makeText(mainContext, "Update Successful", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(mainContext, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            if (db != null) {
+                db.close();
+                db = null;
+            }
         }
     }
 }
