@@ -39,7 +39,7 @@ public class DBListener {
             String q = "INSERT INTO PHONE_CONTACTS (name,phone,email) ";
             q+="VALUES(?,?,?)";
             db.execSQL(q,inputs);
-            Toast.makeText(mainContext,"Insert successfully!",
+            Toast.makeText(mainContext,"Insert is successful!",
                     Toast.LENGTH_LONG).show();
         }catch(SQLiteConstraintException e) {
             Toast.makeText(mainContext,
@@ -62,7 +62,7 @@ public class DBListener {
             String q = "UPDATE PHONE_CONTACTS SET name = ?, phone = ?, email = ? ";
             q += "WHERE ID = ?;";
             db.execSQL(q, inputs);
-            Toast.makeText(mainContext, "Update Successful", Toast.LENGTH_LONG).show();
+            Toast.makeText(mainContext, "Update is successful!", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(mainContext, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         } finally {
@@ -80,7 +80,7 @@ public class DBListener {
             String q = "DELETE FROM PHONE_CONTACTS WHERE ";
             q += "ID = ?;";
             db.execSQL(q, new Object[] { id });
-            Toast.makeText(mainContext, "Update Successful", Toast.LENGTH_LONG).show();
+            Toast.makeText(mainContext, "Delete is successful!", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(mainContext, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         } finally {
