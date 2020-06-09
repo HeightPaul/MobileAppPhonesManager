@@ -10,27 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editName"
-        android:hint="Име"
-        android:inputType="text"></EditText>
+        android:hint="Full Name"
+        android:inputType="textPersonName"></EditText>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editPhone"
-        android:hint="Телефон"
+        android:hint="Phone"
+        android:maxLength="10"
         android:inputType="phone"></EditText>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editEmail"
-        android:hint="Имейл"
-        android:inputType="textEmailAddress"></EditText>
+        android:id="@+id/editEgn"
+        android:hint="EGN"
+        android:maxLength="10"
+        android:inputType="number"></EditText>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Въведи"
+        android:text="Create"
         android:id="@+id/btnInsert"></Button>
 
     <ScrollView
@@ -56,21 +58,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Име"
+                    android:text="Full Name"
                     android:layout_weight="1"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Имейл"
+                    android:text="EGN"
                     android:layout_weight="1"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Телефон"
+                    android:text="Phone"
                     android:layout_weight="1"
                     android:textStyle="bold" />
             </TableRow>

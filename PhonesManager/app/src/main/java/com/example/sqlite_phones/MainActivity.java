@@ -20,7 +20,8 @@ import com.example.sqlite_phones.Helpers.DBListener;
 public class MainActivity extends AppCompatActivity {
 
     public static final String DB_NAME = "kontakti.db";
-    public EditText editName, editPhone, editEmail;
+    public static final String NAME_PATTERN = "^([A-Z][a-z]*((\\s)))+[A-Z][a-z]*$";
+    public EditText editName, editPhone, editEgn;
     public Button btnInsert;
     public String dbPath;
     protected DBListener dbListener = new DBListener();
@@ -32,18 +33,18 @@ public class MainActivity extends AppCompatActivity {
                 TableRow tr = (TableRow) view;
                 TextView idView = (TextView) tr.getChildAt(0);
                 TextView nameView = (TextView) tr.getChildAt(1);
-                TextView emailView = (TextView) tr.getChildAt(2);
+                TextView egnView = (TextView) tr.getChildAt(2);
                 TextView phoneView = (TextView) tr.getChildAt(3);
                 String ID = idView.getText().toString();
                 String name = nameView.getText().toString();
-                String email = emailView.getText().toString();
+                String egn = egnView.getText().toString();
                 String phone = phoneView.getText().toString();
 
                 Intent intent = new Intent(MainActivity.this, UpdateActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("ID", ID);
                 bundle.putString("name", name);
-                bundle.putString("email", email);
+                bundle.putString("egn", egn);
                 bundle.putString("phone", phone);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 200, bundle);
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         while(c.moveToNext())
         {
             String name = c.getString(c.getColumnIndex("name"));
-            String email = c.getString(c.getColumnIndex("email"));
+            String egn = c.getString(c.getColumnIndex("egn"));
             String phone = c.getString(c.getColumnIndex("phone"));
             String ID = c.getString(c.getColumnIndex("ID"));
             TextView tvId = new TextView(this);
@@ -76,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
             TextView tvName = new TextView(this);
             tvName.setText(name);
             tvName.setLayoutParams(params);
-            TextView tvEmail = new TextView(this);
-            tvEmail.setText(email);
-            tvEmail.setLayoutParams(params);
+            TextView tvEgn = new TextView(this);
+            tvEgn.setText(egn);
+            tvEgn.setLayoutParams(params);
             TextView tvPhone = new TextView(this);
             tvPhone.setText(phone);
             tvPhone.setLayoutParams(params);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             tr.setId(Integer.parseInt(ID));
             tr.addView(tvId);
             tr.addView(tvName);
-            tr.addView(tvEmail);
+            tr.addView(tvEgn);
             tr.addView(tvPhone);
             tr.setBackgroundColor(Color.WHITE);
             switchToUpdateView(tr);
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             renderTable();
         } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         editName = findViewById(R.id.editName);
-        editEmail = findViewById(R.id.editEmail);
+        editEgn = findViewById(R.id.editEgn);
         editPhone = findViewById(R.id.editPhone);
         btnInsert = findViewById(R.id.btnInsert);
         dbPath = getFilesDir().getPath()+"/"+ DB_NAME;
@@ -125,14 +127,22 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view){
                 String name = editName.getText().toString();
                 String phone = editPhone.getText().toString();
-                String email = editEmail.getText().toString();
-                Object[] inputs = new Object[]{name,phone,email};
-                dbListener.insert( dbPath, inputs, getApplicationContext() );
-                try{
-                    renderTable();
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(),e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                String egn = editEgn.getText().toString();
+                if(name.matches(NAME_PATTERN))
+                {
+                    Object[] inputs = new Object[]{name,phone,egn};
+                    dbListener.insert( dbPath, inputs, getApplicationContext() );
+                    try{
+                        renderTable();
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(),e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Invalid name!", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }

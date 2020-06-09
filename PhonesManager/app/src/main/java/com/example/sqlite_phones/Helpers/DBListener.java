@@ -17,7 +17,7 @@ public class DBListener {
         q += "ID integer primary key AUTOINCREMENT,";
         q += "name text not null,";
         q += "phone text not null,";
-        q += "email text not null,";
+        q += "egn text not null,";
         q += "unique(name,phone));";
         db.execSQL(q);
         db.close();
@@ -36,7 +36,7 @@ public class DBListener {
         SQLiteDatabase db = null;
         try{
             db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-            String q = "INSERT INTO PHONE_CONTACTS (name,phone,email) ";
+            String q = "INSERT INTO PHONE_CONTACTS (name,phone,egn) ";
             q+="VALUES(?,?,?)";
             db.execSQL(q,inputs);
             Toast.makeText(mainContext,"Insert is successful!",
@@ -59,7 +59,7 @@ public class DBListener {
         SQLiteDatabase db = null;
         try {
             db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
-            String q = "UPDATE PHONE_CONTACTS SET name = ?, phone = ?, email = ? ";
+            String q = "UPDATE PHONE_CONTACTS SET name = ?, phone = ?, egn = ? ";
             q += "WHERE ID = ?;";
             db.execSQL(q, inputs);
             Toast.makeText(mainContext, "Update is successful!", Toast.LENGTH_LONG).show();

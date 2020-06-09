@@ -17,7 +17,7 @@ public class UpdateActivity extends AppCompatActivity {
     protected String id;
     protected EditText editName;
     protected EditText editPhone;
-    protected EditText editEmail;
+    protected EditText editEgn;
     protected Button btnUpdate;
     protected Button btnDelete;
     protected DBListener dbListener = new DBListener();
@@ -28,7 +28,7 @@ public class UpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update);
         editName = findViewById(R.id.editName);
         editPhone = findViewById(R.id.editPhone);
-        editEmail = findViewById(R.id.editEmail);
+        editEgn = findViewById(R.id.editEgn);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnDelete = findViewById(R.id.btnDelete);
         Bundle bundle = getIntent().getExtras();
@@ -37,17 +37,24 @@ public class UpdateActivity extends AppCompatActivity {
             id = bundle.getString("ID");
             editName.setText(bundle.getString("name"));
             editPhone.setText(bundle.getString("phone"));
-            editEmail.setText(bundle.getString("email"));
+            editEgn.setText(bundle.getString("egn"));
         }
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = editName.getText().toString();
                 String phone = editPhone.getText().toString();
-                String email = editEmail.getText().toString();
-                Object[] inputs = new Object[] { name, phone, email, id };
-                dbListener.update(dbPath, inputs,getApplicationContext());
-                closeThisActivity();
+                String egn = editEgn.getText().toString();
+                if(name.matches(MainActivity.NAME_PATTERN))
+                {
+                    Object[] inputs = new Object[] { name, phone, egn, id };
+                    dbListener.update(dbPath, inputs,getApplicationContext());
+                    closeThisActivity();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Invalid name!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnDelete.setOnClickListener(new View.OnClickListener() {
