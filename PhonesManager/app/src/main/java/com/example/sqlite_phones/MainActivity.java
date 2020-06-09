@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(), "Invalid name!", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }
