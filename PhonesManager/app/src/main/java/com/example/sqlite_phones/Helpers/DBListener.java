@@ -26,7 +26,7 @@ public class DBListener {
     public void select(MainActivity mainActivity,String dbPath){
         SQLiteDatabase db = null;
         db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-        String q = "SELECT * FROM PHONE_CONTACTS;";
+        String q = "SELECT * FROM PHONE_CONTACTS ORDER BY ID DESC;";
         Cursor c = db.rawQuery(q,null);
         mainActivity.render(c);
         db.close();
